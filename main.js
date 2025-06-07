@@ -7,12 +7,12 @@ export default async ({ req, res }) => {
     .setProject(process.env.APPWRITE_PROJECT_ID)
     .setKey(process.env.APPWRITE_API_KEY);
 
-  // Safe body parsing
   let bodyData = {};
+
   try {
-    bodyData = req.body ? JSON.parse(req.body) : {};
+    bodyData = req.payload ? JSON.parse(req.payload) : {};
   } catch (err) {
-    return res.json({ success: false, error: 'Invalid JSON input' });
+    return res.json({ success: false, error: 'Invalid payload format' });
   }
 
   const { email } = bodyData;

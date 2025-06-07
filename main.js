@@ -6,7 +6,7 @@ export default async ({ req, res }) => {
     .setProject(process.env.APPWRITE_PROJECT_ID)
     .setKey(process.env.APPWRITE_API_KEY);
 
-  const messaging = new sdk.Messaging(client);
+  const emails = new sdk.Emails(client);
 
   // Get email from request body
   const { email } = JSON.parse(req.body);
@@ -14,15 +14,17 @@ export default async ({ req, res }) => {
   // Generate OTP
   const otp = Math.floor(100000 + Math.random() * 900000);
 
-  // Send email
   try {
-    await messaging.createEmail({
-      subject: "Your OTP Code",
-      content: `Your OTP is: ${otp}`,
-      recipients: [email]
-    });
+    // Send the email
+    await emails.create(
+      "your_email_template_id", // Get this from Appwrite → Messaging → Templates
+      [email], // Recipient list
+      {
+        OTP: otp // This is your dynamic variable in the template
+      }
+    );
 
-    return res.json({ success: true });
+    return res.json({ success: true, otp }); // Include OTP if needed
   } catch (err) {
     return res.json({ success: false, error: err.message });
   }

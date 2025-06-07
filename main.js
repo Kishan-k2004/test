@@ -7,7 +7,19 @@ export default async ({ req, res }) => {
     .setProject(process.env.APPWRITE_PROJECT_ID)
     .setKey(process.env.APPWRITE_API_KEY);
 
-  const { email } = JSON.parse(req.body);
+  // Safe body parsing
+  let bodyData = {};
+  try {
+    bodyData = req.body ? JSON.parse(req.body) : {};
+  } catch (err) {
+    return res.json({ success: false, error: 'Invalid JSON input' });
+  }
+
+  const { email } = bodyData;
+
+  if (!email) {
+    return res.json({ success: false, error: 'Email is required' });
+  }
 
   const otp = Math.floor(100000 + Math.random() * 900000);
 

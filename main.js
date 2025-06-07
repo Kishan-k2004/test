@@ -1,4 +1,5 @@
-import { Client, Messaging } from "node-appwrite";
+import pkg from 'node-appwrite';
+const { Client, Messaging } = pkg;
 
 export default async ({ req, res }) => {
   const client = new Client()
